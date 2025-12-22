@@ -12,6 +12,8 @@ import BoardingPage from './pages/BoardingPage';
 import DayTrainingPage from './pages/DayTrainingPage';
 import logo from './assets/logo.svg';
 import { useEventAccess } from './hooks/useEventAccess';
+// @ts-ignore
+import { client } from '../tina/__generated__/client';
 
 // --- Helper Components ---
 
@@ -68,7 +70,22 @@ const AppContent = () => {
 
   // Local state for the mobile menu toggle
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [announcement, setAnnouncement] = useState<any>(null);
   const event = useEventAccess();
+
+  useEffect(() => {
+    const fetchAnnouncement = async () => {
+      try {
+        const res = await client.queries.home({ relativePath: "home.md" });
+        if (res.data.home.announcement) {
+          setAnnouncement(res.data.home.announcement);
+        }
+      } catch (error) {
+        console.error("Error fetching announcement:", error);
+      }
+    };
+    fetchAnnouncement();
+  }, []);
 
   // Wouter route matchers for dynamic link styling
   const isActive = (path: string) => useRoute(path)[0];
@@ -87,12 +104,7 @@ const AppContent = () => {
       <header className="bg-pawhaus-blue text-pawhaus-white font-sans py-2 text-center text-sm sticky top-0 z-50 shadow-md">
         <p className="container mx-auto px-4">
           {
-            !event || Date.now() > new Date('2025-12-31T23:59:59').getTime()
-            ? "Save 10% on all services, mention \"HELLO10\" — our welcome gift to you!"
-            : <>
-                Receive 15% off all our services with code "DOVE15" - we'll donate an additional 5% to DOVE Project! *
-                <span className="block text-xs opacity-80 mt-1">* Offer valid through December 31, 2025</span>
-              </>
+            announcement && announcement.defaultText
           }
         </p>
       </header>

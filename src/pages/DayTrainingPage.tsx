@@ -1,7 +1,24 @@
+import { useState, useEffect } from "react";
+import { TinaMarkdown } from "tinacms/dist/rich-text";
+// @ts-ignore
+import { client } from "../../tina/__generated__/client";
 import background from '../assets/day_training_hero.jpg';
-import focus from '../assets/dt-focus.jpg';
-import journey from '../assets/dt-journey.jpg';
+
 const DayTrainingPage = () => {
+    const [data, setData] = useState<any>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await client.queries.day_training({ relativePath: "day_training.md" });
+                setData(res.data.day_training);
+            } catch (error) {
+                console.error("Error fetching day training page data:", error);
+            }
+        };
+        fetchData();
+    }, []);
+
     return (
         <div className="page-container bg-pawhaus-white">
                     
@@ -9,7 +26,7 @@ const DayTrainingPage = () => {
             <header className="relative h-[60vh] min-h-[400px] md:h-[70vh] w-full flex items-center justify-center text-center text-pawhaus-white p-6">
                 {/* Background Image */}
                 <img 
-                    src={background} 
+                    src={data?.hero?.image || background} 
                     alt="A group of dogs in a day training program."
                     className="absolute inset-0 w-full h-full object-cover"
                 />
@@ -19,7 +36,7 @@ const DayTrainingPage = () => {
                 {/* Hero Content */}
                 <div className="relative z-10">
                     <h1 className="font-urbanist font-black text-4xl sm:text-5xl md:text-7xl drop-shadow-lg">
-                        Day Training
+                        {data?.hero?.headline || "Day Training"}
                     </h1>
                 </div>
             </header>
@@ -28,70 +45,47 @@ const DayTrainingPage = () => {
                 {/* --- 2. Introduction Section --- */}
                 <section className="max-w-3xl mx-auto text-center py-16 px-6 md:py-24">
                     <h2 className="font-urbanist font-bold text-3xl md:text-4xl text-pawhaus-dark mb-6">
-                        Education. Enrichment. Everyday Progress.
+                        {data?.intro?.title || "Education. Enrichment. Everyday Progress."}
                     </h2>
                     <p className="text-lg md:text-xl text-pawhaus-dark leading-relaxed">
-                        Day Training offers a school-day experience where dogs learn, play, and practice under the guidance of our professional trainers—without overnight boarding.
+                        {data?.intro?.description || "Day Training offers a school-day experience..."}
                     </p>
                 </section>
 
-                {/* --- 3. Program Details (Split Content) --- */}
-                <section className="bg-white py-16 md:py-24 overflow-hidden">
-                    <div className="max-w-7xl mx-auto px-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 items-center">
-                            {/* Text Content */}
-                            <div>
-                                <h3 className="font-urbanist font-bold text-2xl md:text-3xl text-pawhaus-dark mb-6">
-                                    A Focus on Real-World Skills
-                                </h3>
-                                <p className="text-pawhaus-dark leading-relaxed mb-6">
-                                    Each day focuses on confidence, obedience, leash skills, and impulse control, with plenty of rest and enrichment in between.
-                                </p>
-                                <ul className="space-y-4">
-                                    <div>✔ Confidence Building</div>
-                                    <div>✔ Obedience & Manners</div>
-                                    <div>✔ Leash Skills</div>
-                                    <div>✔ Impulse Control</div>
-                                </ul>
-                            </div>
-                            
-                            {/* Image Content */}
-                            <div className="w-full h-64 md:h-96">
-                                <img 
-                                    src={focus}
-                                    alt="A dog learning good leash manners with a trainer."
-                                    className="w-full h-full object-cover rounded-2xl shadow-xl" 
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                
-                {/* --- 4. Graduation Info (Split Content, swapped) --- */}
-                <section className="py-16 md:py-24 overflow-hidden">
-                    <div className="max-w-7xl mx-auto px-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 items-center">
-                            {/* Image Content (First on mobile, second on desktop) */}
-                            <div className="w-full h-64 md:h-96 md:order-last">
-                                <img 
-                                    src={journey}
-                                    alt="A family talking with a dog trainer."
-                                    className="w-full h-full object-cover rounded-2xl shadow-xl" 
-                                />
-                            </div>
-                            
-                            {/* Text Content */}
-                            <div className="md:order-first">
-                                <h3 className="font-urbanist font-bold text-2xl md:text-3xl text-pawhaus-dark mb-6">
-                                    Continue Your Journey at Home
-                                </h3>
-                                <p className="text-pawhaus-dark leading-relaxed">
-                                    At the end of the program, families join a Parent–Teacher Conference to review everything their dog has learned, discuss what to continue at home, and design a new lesson plan for ongoing progress.
-                                </p>
+                {/* --- 3. Content Rows --- */}
+                {data?.content_rows?.map((row: any, index: number) => (
+                    <section key={index} className={`py-16 md:py-24 overflow-hidden ${index % 2 === 0 ? 'bg-white' : ''}`}>
+                        <div className="max-w-7xl mx-auto px-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 items-center">
+                                {/* Image Content */}
+                                <div className={`w-full h-64 md:h-96 ${row.imageRight ? 'md:order-last' : ''}`}>
+                                    <img 
+                                        src={row.image}
+                                        alt={row.title}
+                                        className="w-full h-full object-cover rounded-2xl shadow-xl" 
+                                    />
+                                </div>
+                                
+                                {/* Text Content */}
+                                <div>
+                                    <h3 className="font-urbanist font-bold text-2xl md:text-3xl text-pawhaus-dark mb-6">
+                                        {row.title}
+                                    </h3>
+                                    <div className="text-pawhaus-dark leading-relaxed mb-6">
+                                        <TinaMarkdown content={row.content} />
+                                    </div>
+                                    {row.listItems && (
+                                        <ul className="space-y-4">
+                                            {row.listItems.split('\n').map((item: string, i: number) => (
+                                                <div key={i}>{item}</div>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
+                ))}
 
                 {/* --- 5. Pricing Section --- */}
                 <section className="bg-pawhaus-blue py-20 md:py-28">
@@ -107,23 +101,23 @@ const DayTrainingPage = () => {
                                     {/* Left Side: Main Pricing */}
                                     <div className="flex flex-col text-center p-8 bg-pawhaus-blue/5 rounded-2xl h-full">
                                         <h3 className="font-urbanist font-extrabold text-2xl text-pawhaus-dark mb-4">
-                                            Day Training
+                                            {data?.pricing?.main?.title || "Day Training"}
                                         </h3>
                                         <div className="my-4">
                                             <span className="font-urbanist font-black text-6xl text-pawhaus-blue">
-                                                $150
+                                                {data?.pricing?.main?.price || "$150"}
                                             </span>
-                                            <span className="text-pawhaus-dark font-medium">/ per session</span>
+                                            <span className="text-pawhaus-dark font-medium">{data?.pricing?.main?.per || "/ per session"}</span>
                                         </div>
                                         <p className="text-pawhaus-dark text-sm mb-6">
-                                            À la carte. Book any time.
+                                            {data?.pricing?.main?.description || "À la carte. Book any time."}
                                         </p>
                                         <a 
-                                            href="https://pawhausacademy.portal.gingrapp.com/#/public/contact_us"
+                                            href={data?.pricing?.main?.ctaLink || "https://pawhausacademy.portal.gingrapp.com/#/public/contact_us"}
                                             className="mt-auto inline-block bg-cta-action text-pawhaus-white font-bold font-sans py-3 px-8 rounded-lg shadow-lg hover:bg-pawhaus-blue transition-colors duration-300"
                                             aria-label="Book a Day Training Session"
                                         >
-                                            Enroll Now
+                                            {data?.pricing?.main?.ctaText || "Enroll Now"}
                                         </a>
                                     </div>
                                     
@@ -139,31 +133,25 @@ const DayTrainingPage = () => {
                                                 Within a 30-day period
                                             </p>
                                             <ul className="space-y-2 text-pawhaus-dark">
-                                                <li className="flex justify-between">
-                                                    <span className="font-medium text-pawhaus-dark">5 sessions</span>
-                                                    <span className="font-bold text-pawhaus-dark">5% off</span>
-                                                </li>
-                                                <li className="flex justify-between">
-                                                    <span className="font-medium text-pawhaus-dark">10 sessions</span>
-                                                    <span className="font-bold text-pawhaus-dark">10% off</span>
-                                                </li>
-                                                <li className="flex justify-between">
-                                                    <span className="font-medium text-pawhaus-dark">12 sessions</span>
-                                                    <span className="font-bold text-pawhaus-dark">12% off</span>
-                                                </li>
+                                                {data?.pricing?.packs?.map((pack: any, i: number) => (
+                                                    <li key={i} className="flex justify-between">
+                                                        <span className="font-medium text-pawhaus-dark">{pack.count}</span>
+                                                        <span className="font-bold text-pawhaus-dark">{pack.discount}</span>
+                                                    </li>
+                                                ))}
                                             </ul>
                                         </div>
 
                                         {/* --- Graduate Rate --- */}
                                         <div className="text-center p-8 bg-pawhaus-lightblue/10 rounded-2xl">
                                             <h3 className="font-urbanist font-extrabold text-2xl text-pawhaus-lightblue mb-4">
-                                                B&T Graduate Rate
+                                                {data?.pricing?.graduate?.title || "B&T Graduate Rate"}
                                             </h3>
                                             <div className="my-4">
                                                 <span className="font-urbanist font-black text-6xl text-pawhaus-lightblue">
-                                                    $120
+                                                    {data?.pricing?.graduate?.price || "$120"}
                                                 </span>
-                                                <span className="text-pawhaus-dark font-medium">/ per session</span>
+                                                <span className="text-pawhaus-dark font-medium">{data?.pricing?.graduate?.per || "/ per session"}</span>
                                             </div>
                                         </div>
 

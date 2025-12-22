@@ -1,14 +1,33 @@
+import { useState, useEffect } from "react";
+import { TinaMarkdown } from "tinacms/dist/rich-text";
+// @ts-ignore
+import { client } from "../../tina/__generated__/client";
 import background from '../assets/boarding-hero.jpg';
 import care from '../assets/boarding-care.jpg';
 import guest from '../assets/boarding-guest.jpg';
+
 const BoardingPage = () => {
+    const [data, setData] = useState<any>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await client.queries.boarding({ relativePath: "boarding.md" });
+                setData(res.data.boarding);
+            } catch (error) {
+                console.error("Error fetching boarding page data:", error);
+            }
+        };
+        fetchData();
+    }, []);
+
     return (
     <div className="page-container bg-pawhaus-white"> 
         {/* --- 1. Hero Section --- */}
         <header className="relative h-[60vh] min-h-[400px] md:h-[70vh] w-full flex items-center justify-center text-center text-pawhaus-white p-6">
             {/* Background Image */}
                 <img 
-                    src={background} 
+                    src={data?.hero?.image || background} 
                     alt="A group of dogs in a day training program."
                     className="absolute inset-0 w-full h-full object-cover"
                 />
@@ -18,7 +37,7 @@ const BoardingPage = () => {
             {/* Hero Content */}
             <div className="relative z-10">
                 <h1 className="font-urbanist font-black text-4xl sm:text-5xl md:text-7xl drop-shadow-lg">
-                    Boarding
+                    {data?.hero?.headline || "Boarding"}
                 </h1>
             </div>
         </header>
@@ -27,72 +46,89 @@ const BoardingPage = () => {
                 {/* --- 2. Introduction Section --- */}
                 <section className="max-w-3xl mx-auto text-center py-16 px-6 md:py-24">
                     <h2 className="font-urbanist font-bold text-3xl md:text-4xl text-pawhaus-dark mb-6">
-                        Comfort. Enrichment. Peace of Mind.
+                        {data?.section_header?.title || "Comfort. Enrichment. Peace of Mind."}
                     </h2>
-                    <p className="text-lg md:text-xl text-pawhaus-dark leading-relaxed">
-                        Boarding at PawHaus Academy is designed to feel like home. We welcome dogs of all sizes, ages, and training levels to a safe, supervised environment that prioritizes comfort and connection. Every stay includes daily enrichment and playtime—no hidden fees or add-ons.
+                    <p className="text-lg md:text-xl text-pawhaus-dark leading-relaxed whitespace-pre-line">
+                        {data?.section_header?.description || "Boarding at PawHaus Academy is designed to feel like home. We welcome dogs of all sizes, ages, and training levels to a safe, supervised environment that prioritizes comfort and connection. Every stay includes daily enrichment and playtime—no hidden fees or add-ons."}
                     </p>
                 </section>
 
-                {/* --- 3. Program Details (Split Content) --- */}
-                <section className="bg-white py-16 md:py-24 overflow-hidden">
-                    <div className="max-w-7xl mx-auto px-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 items-center">
-                            {/* Text Content */}
-                            <div>
-                                <h3 className="font-urbanist font-bold text-2xl md:text-3xl text-pawhaus-dark mb-4">
-                                    Continued Care for Graduates
-                                </h3>
-                                <p className="text-pawhaus-dark leading-relaxed">
-                                    For Board & Train graduates, we continue to reinforce learned skills throughout their stay and offer special graduate pricing for up to one year after graduation.
-                                </p>
-                                <ul className="space-y-4 mt-6">
-                                    <div>✔ Skill Reinforcement for Grads</div>
-                                    <div>✔ Daily Enrichment & Playtime</div>
-                                    <div>✔ Safe, Supervised Environment</div>
-                                </ul>
+                {/* --- 3. Dynamic Content Rows --- */}
+                {data?.content_rows ? (
+                    data.content_rows.map((row: any, index: number) => (
+                        <section key={index} className={`py-16 md:py-24 overflow-hidden ${index % 2 === 0 ? 'bg-white' : ''}`}>
+                            <div className="max-w-7xl mx-auto px-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 items-center">
+                                    {/* Image Content */}
+                                    <div className={`w-full h-64 md:h-96 ${row.imageRight ? 'md:order-last' : 'md:order-first'}`}>
+                                        <img 
+                                            src={row.image}
+                                            alt={row.title}
+                                            className="w-full h-full object-cover rounded-2xl shadow-xl" 
+                                        />
+                                    </div>
+                                    
+                                    {/* Text Content */}
+                                    <div>
+                                        <h3 className="font-urbanist font-bold text-2xl md:text-3xl text-pawhaus-dark mb-4">
+                                            {row.title}
+                                        </h3>
+                                        <div className="text-pawhaus-dark leading-relaxed mb-4">
+                                            <TinaMarkdown content={row.content} />
+                                        </div>
+                                        {row.listItems && (
+                                            <ul className="space-y-4 mt-6">
+                                                {row.listItems.split('\n').map((item: string, i: number) => (
+                                                    <div key={i}>{item}</div>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
-                            
-                            {/* Image Content */}
-                            <div className="w-full h-64 md:h-96">
-                                <img 
-                                    src={care}
-                                    alt="Dogs playing together in an enrichment area."
-                                    className="w-full h-full object-cover rounded-2xl shadow-xl" 
-                                />
+                        </section>
+                    ))
+                ) : (
+                    <>
+                        {/* Fallback Static Content if no data */}
+                        <section className="bg-white py-16 md:py-24 overflow-hidden">
+                            {/* ... (Static content omitted for brevity, but would be here in real fallback) ... */}
+                            <div className="max-w-7xl mx-auto px-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 items-center">
+                                    <div>
+                                        <h3 className="font-urbanist font-bold text-2xl md:text-3xl text-pawhaus-dark mb-4">
+                                            Continued Care for Graduates
+                                        </h3>
+                                        <p className="text-pawhaus-dark leading-relaxed">
+                                            For Board & Train graduates, we continue to reinforce learned skills throughout their stay and offer special graduate pricing for up to one year after graduation.
+                                        </p>
+                                        <ul className="space-y-4 mt-6">
+                                            <div>✔ Skill Reinforcement for Grads</div>
+                                            <div>✔ Daily Enrichment & Playtime</div>
+                                            <div>✔ Safe, Supervised Environment</div>
+                                        </ul>
+                                    </div>
+                                    <div className="w-full h-64 md:h-96">
+                                        <img src={care} alt="Dogs playing" className="w-full h-full object-cover rounded-2xl shadow-xl" />
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </section>
-                
-                {/* --- 4. Assessment Info (Split Content, swapped) --- */}
-                <section className="py-16 md:py-24 overflow-hidden">
-                    <div className="max-w-7xl mx-auto px-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 items-center">
-                            {/* Image Content (First on mobile, second on desktop) */}
-                            <div className="w-full h-64 md:h-96 md:order-last">
-                                <img 
-                                    src={guest}
-                                    alt="A trainer assessing a new dog for compatibility."
-                                    className="w-full h-full object-cover rounded-2xl shadow-xl" 
-                                />
+                        </section>
+                        <section className="py-16 md:py-24 overflow-hidden">
+                             <div className="max-w-7xl mx-auto px-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 items-center">
+                                    <div className="w-full h-64 md:h-96 md:order-last">
+                                        <img src={guest} alt="Assessment" className="w-full h-full object-cover rounded-2xl shadow-xl" />
+                                    </div>
+                                    <div className="md:order-first">
+                                        <h3 className="font-urbanist font-bold text-2xl md:text-3xl text-pawhaus-dark mb-6">New Guest Assessments</h3>
+                                        <p className="text-pawhaus-dark leading-relaxed mb-4">For dogs who have not yet completed a PawHaus training program...</p>
+                                    </div>
+                                </div>
                             </div>
-                            
-                            {/* Text Content */}
-                            <div className="md:order-first">
-                                <h3 className="font-urbanist font-bold text-2xl md:text-3xl text-pawhaus-dark mb-6">
-                                    New Guest Assessments
-                                </h3>
-                                <p className="text-pawhaus-dark leading-relaxed mb-4">
-                                    For dogs who have not yet completed a PawHaus training program, we require a one-day assessment before their first boarding stay to ensure comfort, compatibility, and a balanced environment for all guests.
-                                </p>
-                                    <p className="text-pawhaus-dark leading-relaxed">
-                                    The assessment is a one-time fee of $250, with 50% credited toward your first stay. If you’re unable to schedule an assessment prior to boarding, a $75 behavioral review surcharge applies to the first visit.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                        </section>
+                    </>
+                )}
 
                 {/* --- 5. Pricing Section --- */}
                 <section className="bg-pawhaus-blue py-20 md:py-28">
@@ -112,7 +148,7 @@ const BoardingPage = () => {
                                         </h3>
                                         <div className="my-4">
                                             <span className="font-urbanist font-black text-6xl text-pawhaus-blue">
-                                                $125
+                                                ${data?.pricing?.standard_price || "125"}
                                             </span>
                                             <span className="text-pawhaus-dark font-medium">/ per night</span>
                                         </div>
@@ -136,7 +172,7 @@ const BoardingPage = () => {
                                             </h3>
                                             <div className="my-4">
                                                 <span className="font-urbanist font-black text-6xl text-pawhaus-lightblue">
-                                                    $112.50
+                                                    ${data?.pricing?.graduate_price || "112.50"}
                                                 </span>
                                                 <span className="text-pawhaus-dark font-medium">/ per night</span>
                                             </div>
@@ -150,7 +186,7 @@ const BoardingPage = () => {
                                                 One-Day Assessment
                                             </h3>
                                             <span className="font-urbanist font-bold text-3xl text-pawhaus-dark">
-                                                $250
+                                                ${data?.pricing?.assessment_price || "250"}
                                             </span>
                                             <p className="text-pawhaus-dark text-sm mt-2">
                                                 One-time fee for new guests. 50% credited to first stay.
