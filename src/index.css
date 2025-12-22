@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+/* Tailwind v4 Theme Configuration */
+@theme {
+  /* Custom Colors */
+  --color-pawhaus-blue: #1c3562;
+  --color-pawhaus-lightblue: #669bbc;
+  --color-pawhaus-white: #fcfaf8;
+  --color-pawhaus-plat: #ae9040;
+  --color-pawhaus-dark: #2e2e2e;
+  --color-announcement: #1c3562;
+  --color-cta-action: var(--color-pawhaus-lightblue);
+  --color-brand-primary: #1c3562;
+  
+  /* Custom Font Families */
+  --font-sans: Poppins, system-ui, sans-serif;
+  --font-serif: Merriweather, serif;
+  --font-urbanist: Urbanist, sans-serif;
+  
+  /* Custom Spacing */
+  --spacing-8xl: 96rem;
+  --spacing-9xl: 128rem;
+  
+  /* Custom Border Radius */
+  --radius-4xl: 2rem;
+}
