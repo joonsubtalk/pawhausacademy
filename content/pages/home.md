@@ -13,7 +13,7 @@ hero:
   ctaText: Contact Us Now
 services:
   - title: Boarding
-    subtitle: Comfort, Enrichment, Peace of Mind.
+    subtitle: 'Comfort, Enrichment, Peace of Mind.'
     description: >-
       We welcome dogs of all sizes, ages, and training levels to stay in a safe,
       supervised environment that prioritizes comfort and fulfillment.
@@ -64,38 +64,6 @@ approach:
       and tools to continue the journey at home.
     imageUrl: /uploads/home-commit.jpg
     flipContent: true
-testimonials:
-  - name: Julie P
-    quote: >-
-      The staff is so incredibly patient and knowledgeable… One less thing for
-      me to worry about when I'm away. They are worth every penny!
-    rating: 5
-  - name: Shauna G
-    quote: >-
-      Happier dog, Happier Home. And, Daisy feels safe and trusts us since we
-      now understand her signals and listen to her needs
-    rating: 5
-  - name: Deisy D
-    quote: >-
-      The staff is always friendly and welcoming, and my dogs love the social
-      time and fun activities. I always feel confident leaving them
-    rating: 5
-  - name: Eman K
-    quote: >-
-      Every time we travel we leave our dog there to reinforce the training …
-      Even the dog gets so happy every time  he sees the trainers.
-    rating: 5
-  - name: Karen M
-    quote: >-
-      PawHaus has become like family to us. The entire team is incredible -- so
-      caring, loving, and truly skilled.
-    rating: 5
-  - name: Cesar B
-    quote: >-
-      I can leave and not worry about her I get follow up texts and pictures
-      everyday of how she's doing…they are wonderful caring people I would give
-      them 10 stars if I could
-    rating: 5
 gallery:
   - image: /uploads/anker00.jpg
     alt: Gallery Image 1
@@ -221,5 +189,37 @@ faqs:
       Thanksgiving: 11/21 – 12/1 
 
       Christmas & New Years: 12/20 – 1/3/2026
+testimonials:
+  - name: Julie P
+    quote: >-
+      The staff is so incredibly patient and knowledgeable… One less thing for
+      me to worry about when I'm away. They are worth every penny!
+    rating: 5
+  - name: Shauna G
+    quote: >-
+      Happier dog, Happier Home. And, Daisy feels safe and trusts us since we
+      now understand her signals and listen to her needs
+    rating: 5
+  - name: Deisy D
+    quote: >-
+      The staff is always friendly and welcoming, and my dogs love the social
+      time and fun activities. I always feel confident leaving them
+    rating: 5
+  - name: Eman K
+    quote: >-
+      Every time we travel we leave our dog there to reinforce the training …
+      Even the dog gets so happy every time  he sees the trainers.
+    rating: 5
+  - name: Karen M
+    quote: >-
+      PawHaus has become like family to us. The entire team is incredible -- so
+      caring, loving, and truly skilled.
+    rating: 5
+  - name: Cesar B
+    quote: >-
+      I can leave and not worry about her I get follow up texts and pictures
+      everyday of how she's doing…they are wonderful caring people I would give
+      them 10 stars if I could
+    rating: 5
 ---
 
