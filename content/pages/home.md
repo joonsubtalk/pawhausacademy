@@ -96,6 +96,27 @@ testimonials:
       everyday of how she's doing…they are wonderful caring people I would give
       them 10 stars if I could
     rating: 5
+gallery:
+  - image: /uploads/anker00.jpg
+    alt: Gallery Image 1
+  - image: /uploads/anker01.jpg
+    alt: Gallery Image 2
+  - image: /uploads/anker02.jpg
+    alt: Gallery Image 3
+  - image: /uploads/anker03.jpg
+    alt: Gallery Image 4
+  - image: /uploads/anker04.jpg
+    alt: Gallery Image 5
+  - image: /uploads/anker05.jpg
+    alt: Gallery Image 6
+  - image: /uploads/anker06.jpg
+    alt: Gallery Image 7
+  - image: /uploads/anker07.jpg
+    alt: Gallery Image 8
+  - image: /uploads/anker08.jpg
+    alt: Gallery Image 9
+  - image: /uploads/anker09.jpg
+    alt: Gallery Image 10
 faqs:
   - question: What makes PawHaus Academy different?
     answer: >-

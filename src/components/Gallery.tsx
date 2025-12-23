@@ -1,27 +1,41 @@
 import { Masonry } from "masonic";
 
-let i = 0;
-const items = Array.from(Array(11), () => ({ id: i++ }));
+interface GalleryProps {
+  images?: {
+    image: string;
+    alt?: string;
+  }[];
+}
 
-const Gallery = () => (
-  <Masonry
+const Gallery = ({ images }: GalleryProps) => {
+  // If no images provided, use empty array
+  const galleryImages = images || [];
+  
+  // Create items array for Masonry
+  // We map the images to items with an id, and append a special item for Instagram
+  const items = [
+    ...galleryImages.map((img, index) => ({ 
+      id: index, 
+      type: 'image', 
+      data: img 
+    })),
+    { id: 'instagram', type: 'instagram', data: null }
+  ];
+
+  return (
+    <Masonry
         items={items}
         columnGutter={24}
         columnWidth={225}
         overscanBy={5}
         render={MasonryCard}
     />
-);
+  );
+};
 
-const padNumber = (num: number, size: number) => {
-    let s = num.toString();
-    while (s.length < size) s = "0" + s;
-    return s;
-}
-
-const MasonryCard = ({ index, data: { id } }: { index: number; data: { id: number } }) => {
-  // Last item - Instagram callout card
-  if (index === 10) {
+const MasonryCard = ({ index, data }: { index: number; data: any }) => {
+  // Instagram callout card
+  if (data.type === 'instagram') {
     return (
       <a 
         href="https://www.instagram.com/pawhausacademy/" 
@@ -41,8 +55,11 @@ const MasonryCard = ({ index, data: { id } }: { index: number; data: { id: numbe
 
   // Regular image cards
   return (
-    <img key={index} src={`/public/anker${padNumber(index,2)}.jpg`} alt={`Gallery Image ${id}`}
-      className="block max-h-50 w-auto object-contain sm:max-h-none sm:w-full sm:object-cover" />
+    <img 
+      src={data.data.image} 
+      alt={data.data.alt || `Gallery Image ${index}`}
+      className="block max-h-50 w-auto object-contain sm:max-h-none sm:w-full sm:object-cover" 
+    />
   );
 };
 

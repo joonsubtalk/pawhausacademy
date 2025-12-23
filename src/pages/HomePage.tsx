@@ -22,6 +22,7 @@ const HomePage = () => {
   const [intro, setIntro] = useState<any>(null);
   const [approach, setApproach] = useState<any[]>([]);
   const [testimonials, setTestimonials] = useState<any[]>([]);
+  const [gallery, setGallery] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchPageData = async () => {
@@ -44,6 +45,9 @@ const HomePage = () => {
         }
         if (res.data.home.testimonials) {
           setTestimonials(res.data.home.testimonials);
+        }
+        if (res.data.home.gallery) {
+          setGallery(res.data.home.gallery);
         }
       } catch (error) {
         console.error("Error fetching page data:", error);
@@ -196,7 +200,7 @@ const HomePage = () => {
       <section id="gallery">
         <div className="max-w-[100%] sm:max-w-[80%] xl:max-w-[75%] mx-auto px-4 py-16">
           <h2 className="text-3xl font-bold font-urbanist mb-8 text-center">Gallery</h2>
-            <Gallery />
+            <Gallery images={gallery} />
         </div>
       </section>
 

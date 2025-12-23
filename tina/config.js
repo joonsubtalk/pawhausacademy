@@ -233,6 +233,29 @@ export default defineConfig({
               }
             ]
           },
+          {
+            type: "object",
+            name: "gallery",
+            label: "Gallery",
+            list: true,
+            ui: {
+              itemProps: (item) => {
+                return { label: item?.alt || "Image" };
+              },
+            },
+            fields: [
+              {
+                type: "image",
+                name: "image",
+                label: "Image",
+              },
+              {
+                type: "string",
+                name: "alt",
+                label: "Alt Text",
+              }
+            ]
+          },
         ],
       },
       {
