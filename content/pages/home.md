@@ -1,7 +1,7 @@
 ---
 title: Home Page
 announcement:
-  defaultText: 'Save 10% on all services, mention "HELLO10" — Our welcome gift to you!'
+  defaultText: 'Save 10% on all services, mention "HELLO10" — our welcome gift to you!'
   promoText: >-
     Receive 15% off all our services with code "DOVE15" - we'll donate an
     additional 5% to DOVE Project! *
