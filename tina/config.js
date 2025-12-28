@@ -642,6 +642,100 @@ export default defineConfig({
           },
         ],
       },
+      {
+        name: "footer",
+        label: "Footer",
+        path: "content/footer",
+        format: "md",
+        fields: [
+          {
+            type: "object",
+            name: "contactInfo",
+            label: "Contact Info",
+            list: true,
+            ui: {
+              itemProps: (item) => {
+                return { label: item?.label };
+              },
+            },
+            fields: [
+              {
+                type: "string",
+                name: "label",
+                label: "Label",
+              },
+              {
+                type: "string",
+                name: "value",
+                label: "Value",
+              },
+            ],
+          },
+          {
+            type: "object",
+            name: "linkColumns",
+            label: "Link Columns",
+            list: true,
+            ui: {
+              itemProps: (item) => {
+                return { label: item?.title };
+              },
+            },
+            fields: [
+              {
+                type: "string",
+                name: "title",
+                label: "Column Title",
+              },
+              {
+                type: "object",
+                name: "links",
+                label: "Links",
+                list: true,
+                ui: {
+                  itemProps: (item) => {
+                    return { label: item?.label };
+                  },
+                },
+                fields: [
+                  {
+                    type: "string",
+                    name: "label",
+                    label: "Link Label",
+                  },
+                  {
+                    type: "string",
+                    name: "url",
+                    label: "Link URL",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: "object",
+            name: "social",
+            label: "Social Media Links",
+            fields: [
+              {
+                type: "string",
+                name: "facebook",
+                label: "Facebook URL",
+              },
+              {
+                type: "string",
+                name: "instagram",
+                label: "Instagram URL",
+              },
+              {
+                type: "string",
+                name: "yelp",
+                label: "Yelp URL",
+              },
+            ],
+          },
+        ],
+      },
     ],
   },
 });
